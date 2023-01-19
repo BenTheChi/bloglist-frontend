@@ -3,6 +3,7 @@ import blogsService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable';
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm';
 
@@ -39,13 +40,15 @@ const App = () => {
 				return false;
 			})
 
+			usersBlogs.sort((a, b) => a.likes > b.likes ? -1 : 1)
 			setBlogsToShow(usersBlogs);
 		}
 	}, [blogs])
 
 	const addBlog = async (title, author, url) => {
 		let newBlog = await blogsService.create({title: title, author: author, url: url});
-		setBlogsToShow([...blogsToShow, newBlog])
+		const newBlogsToShow = [...blogsToShow, newBlog].sort((a, b) => a.likes > b.likes ? -1 : 1)
+		setBlogsToShow(newBlogsToShow)
 		setNotificationMessage('New blog added')
 		  	setTimeout(() => {
 				setNotificationMessage(null)
@@ -77,6 +80,7 @@ const App = () => {
 				return false;
 			})
 
+			usersBlogs.sort((a, b) => a.likes > b.likes ? -1 : 1)
 			setBlogsToShow(usersBlogs);
 
 			setNotificationMessage('Successfully logged in')
@@ -102,6 +106,40 @@ const App = () => {
 			}, 5000)
 	}
 
+	const handleLike = (likedBlog) => {
+		const newBlogsToShow = blogsToShow.map((blog) => {
+			if(blog.id === likedBlog.id){
+				let updatedBlog = likedBlog;
+				updatedBlog.likes++;
+				updatedBlog.user = currUser.id;
+				blogsService.update(likedBlog.id, updatedBlog)
+				return updatedBlog;
+			}
+
+			return blog
+		})
+
+		newBlogsToShow.sort((a, b) => a.likes > b.likes ? -1 : 1)
+		setBlogsToShow(newBlogsToShow);
+	}
+
+	const handleDelete = (deleteBlog) => {
+		if(!window.confirm(`Remove blog ${deleteBlog.title}?`))
+			return false;
+			
+		const newBlogsToShow = blogsToShow.filter((blog) => {
+			if(blog.id === deleteBlog.id){
+				blogsService.deleteBlog(deleteBlog.id)
+				return false;
+			}
+
+			return true;
+		})
+
+		newBlogsToShow.sort((a, b) => a.likes > b.likes ? -1 : 1)
+		setBlogsToShow(newBlogsToShow);
+	}
+
 	if(currUser === null){
 		return(
 			<div>
@@ -116,11 +154,12 @@ const App = () => {
 				<h1>Blogs</h1>
 				<Notification message={noticationMessage} />
 				{currUser.username} logged in <br/><br/> <button onClick={handleLogout}>logout</button>
-				Create New <br />
-				<BlogForm addBlog={addBlog}/>
+				<Togglable buttonLabel="New Blog">
+					<BlogForm addBlog={addBlog}/>
+				</Togglable>
 				<ul>
 					{blogsToShow.map((blog) => 
-						<Blog key={blog.id} title={blog.title} author={blog.author} />
+						<Blog key={blog.id} title={blog.title} author={blog.author} likes={blog.likes} handleLike={() => {handleLike(blog)}} handleDelete={() => {handleDelete(blog)}}/>
 					)}
 				</ul>
 			</div>

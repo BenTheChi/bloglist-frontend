@@ -1,6 +1,6 @@
-const Blog = ({title, author, id}) => (
+const Blog = ({title, author, likes, id, handleLike, handleDelete}) => (
   <div id={id}>
-    {title} {author}
+    TITLE: {title} AUTHOR: {author} LIKES: {likes} <button onClick={handleLike}>LIKE</button> <button onClick={handleDelete}>DELETE</button>
   </div>  
 )
 
