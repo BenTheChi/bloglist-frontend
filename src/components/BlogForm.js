@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-const BlogForm = ({addBlog}) => {
-	
-	const [title, setTitle] = useState('');
-	const [author, setAuthor] = useState('');
-	const [url, setUrl] = useState('');
-	return (	
+const BlogForm = ({ addBlog }) => {
+
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+	return (
 		<div>
 			<b>Create New </b><br />
 			<form onSubmit={() => {
@@ -42,8 +42,8 @@ const BlogForm = ({addBlog}) => {
 					/>
 				</div>
 				<button type="submit">create</button>
-			</form>  
-		</div>	
+			</form>
+		</div>
 	)
 }
 

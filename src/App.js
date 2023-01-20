@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react'
-import blogsService from './services/blogs';
-import loginService from './services/login';
+import blogsService from './services/blogs'
+import loginService from './services/login'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable';
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
-import BlogForm from './components/BlogForm';
+import BlogForm from './components/BlogForm'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([]) 
+	const [blogs, setBlogs] = useState([])
 	const [noticationMessage, setNotificationMessage] = useState(null)
-	const [username, setUsername] = useState('') 
-	const [password, setPassword] = useState('') 
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
 	const [currUser, setUser] = useState(null)
 	const [blogsToShow, setBlogsToShow] = useState([])
-	
-  
+
+
 	useEffect(() => {
 		(async () => {
-			let initialBlogs = await blogsService.getAll();
+			let initialBlogs = await blogsService.getAll()
 			setBlogs(initialBlogs)
 		})()
 	}, [])
@@ -33,34 +33,34 @@ const App = () => {
 			const usersBlogs = blogs.filter( blog => {
 				if(blog.user){
 					if(blog.user.username === user.username){
-						return true;
+						return true
 					}
 				}
 
-				return false;
+				return false
 			})
 
 			usersBlogs.sort((a, b) => a.likes > b.likes ? -1 : 1)
-			setBlogsToShow(usersBlogs);
+			setBlogsToShow(usersBlogs)
 		}
 	}, [blogs])
 
 	const addBlog = async (title, author, url) => {
-		let newBlog = await blogsService.create({title: title, author: author, url: url});
+		let newBlog = await blogsService.create({ title: title, author: author, url: url })
 		const newBlogsToShow = [...blogsToShow, newBlog].sort((a, b) => a.likes > b.likes ? -1 : 1)
 		setBlogsToShow(newBlogsToShow)
 		setNotificationMessage('New blog added')
-		  	setTimeout(() => {
-				setNotificationMessage(null)
-			}, 5000)
+		setTimeout(() => {
+			setNotificationMessage(null)
+		}, 5000)
 	}
 
 	const handleLogin = async (event) => {
 		event.preventDefault()
-		
+
 		try {
 			const user = await loginService.login({
-			username, password,
+				username, password,
 			})
 			setUser(user)
 			setUsername('')
@@ -68,29 +68,29 @@ const App = () => {
 
 			window.localStorage.setItem(
 				'loggedBlogAppUser', JSON.stringify(user)
-			) 
-			
+			)
+
 			const usersBlogs = blogs.filter( blog => {
 				if(blog.user){
 					if(blog.user.username === user.username){
-						return true;
+						return true
 					}
 				}
 
-				return false;
+				return false
 			})
 
 			usersBlogs.sort((a, b) => a.likes > b.likes ? -1 : 1)
-			setBlogsToShow(usersBlogs);
+			setBlogsToShow(usersBlogs)
 
 			setNotificationMessage('Successfully logged in')
-		  	setTimeout(() => {
+			setTimeout(() => {
 				setNotificationMessage(null)
 			}, 5000)
 
 		} catch (exception) {
 			setNotificationMessage('Wrong credentials')
-		  	setTimeout(() => {
+			setTimeout(() => {
 				setNotificationMessage(null)
 			}, 5000)
 		}
@@ -98,46 +98,46 @@ const App = () => {
 	}
 
 	const handleLogout = async () => {
-		window.localStorage.removeItem('loggedBlogAppUser');
-		setUser(null);
+		window.localStorage.removeItem('loggedBlogAppUser')
+		setUser(null)
 		setNotificationMessage('Successfully logged out')
-		  	setTimeout(() => {
-				setNotificationMessage(null)
-			}, 5000)
+		setTimeout(() => {
+			setNotificationMessage(null)
+		}, 5000)
 	}
 
 	const handleLike = (likedBlog) => {
 		const newBlogsToShow = blogsToShow.map((blog) => {
 			if(blog.id === likedBlog.id){
-				let updatedBlog = likedBlog;
-				updatedBlog.likes++;
-				updatedBlog.user = currUser.id;
+				let updatedBlog = likedBlog
+				updatedBlog.likes++
+				updatedBlog.user = currUser.id
 				blogsService.update(likedBlog.id, updatedBlog)
-				return updatedBlog;
+				return updatedBlog
 			}
 
 			return blog
 		})
 
 		newBlogsToShow.sort((a, b) => a.likes > b.likes ? -1 : 1)
-		setBlogsToShow(newBlogsToShow);
+		setBlogsToShow(newBlogsToShow)
 	}
 
 	const handleDelete = (deleteBlog) => {
 		if(!window.confirm(`Remove blog ${deleteBlog.title}?`))
-			return false;
-			
+			return false
+
 		const newBlogsToShow = blogsToShow.filter((blog) => {
 			if(blog.id === deleteBlog.id){
 				blogsService.deleteBlog(deleteBlog.id)
-				return false;
+				return false
 			}
 
-			return true;
+			return true
 		})
 
 		newBlogsToShow.sort((a, b) => a.likes > b.likes ? -1 : 1)
-		setBlogsToShow(newBlogsToShow);
+		setBlogsToShow(newBlogsToShow)
 	}
 
 	if(currUser === null){
@@ -158,13 +158,13 @@ const App = () => {
 					<BlogForm addBlog={addBlog}/>
 				</Togglable>
 				<ul>
-					{blogsToShow.map((blog) => 
+					{blogsToShow.map((blog) =>
 						<Blog key={blog.id} title={blog.title} author={blog.author} likes={blog.likes} handleLike={() => {handleLike(blog)}} handleDelete={() => {handleDelete(blog)}}/>
 					)}
 				</ul>
 			</div>
 		)
 	}
-  }
-  
-  export default App
+}
+
+export default App
