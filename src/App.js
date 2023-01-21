@@ -159,7 +159,7 @@ const App = () => {
 				</Togglable>
 				<ul>
 					{blogsToShow.map((blog) =>
-						<Blog key={blog.id} title={blog.title} author={blog.author} likes={blog.likes} handleLike={() => {handleLike(blog)}} handleDelete={() => {handleDelete(blog)}}/>
+						<Blog key={blog.id} title={blog.title} author={blog.author} likes={blog.likes} url={blog.url} handleLike={() => {handleLike(blog)}} handleDelete={() => {handleDelete(blog)}}/>
 					)}
 				</ul>
 			</div>
