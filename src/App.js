@@ -46,6 +46,7 @@ const App = () => {
 	}, [blogs])
 
 	const addBlog = async (title, author, url) => {
+		event.preventDefault()
 		let newBlog = await blogsService.create({ title: title, author: author, url: url })
 		const newBlogsToShow = [...blogsToShow, newBlog].sort((a, b) => a.likes > b.likes ? -1 : 1)
 		setBlogsToShow(newBlogsToShow)

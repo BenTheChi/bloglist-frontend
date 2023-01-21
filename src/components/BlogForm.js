@@ -8,7 +8,8 @@ const BlogForm = ({ addBlog }) => {
 	return (
 		<div>
 			<b>Create New </b><br />
-			<form onSubmit={() => {
+			<form onSubmit={(event) => {
+				event.preventDefault()
 				addBlog(title, author, url)
 				setTitle('')
 				setAuthor('')
@@ -20,6 +21,7 @@ const BlogForm = ({ addBlog }) => {
 						type="text"
 						value={title}
 						name="Title"
+						className='title'
 						onChange={({ target }) => setTitle(target.value)}
 					/>
 				</div>
@@ -29,6 +31,7 @@ const BlogForm = ({ addBlog }) => {
 						type="text"
 						value={author}
 						name="Author"
+						className='author'
 						onChange={({ target }) => setAuthor(target.value)}
 					/>
 				</div>
@@ -38,10 +41,11 @@ const BlogForm = ({ addBlog }) => {
 						type="text"
 						value={url}
 						name="Url"
+						className='url'
 						onChange={({ target }) => setUrl(target.value)}
 					/>
 				</div>
-				<button type="submit">create</button>
+				<button type="submit" className="create">create</button>
 			</form>
 		</div>
 	)
