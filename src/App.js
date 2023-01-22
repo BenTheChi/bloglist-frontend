@@ -46,7 +46,6 @@ const App = () => {
 	}, [blogs])
 
 	const addBlog = async (title, author, url) => {
-		event.preventDefault()
 		let newBlog = await blogsService.create({ title: title, author: author, url: url })
 		const newBlogsToShow = [...blogsToShow, newBlog].sort((a, b) => a.likes > b.likes ? -1 : 1)
 		setBlogsToShow(newBlogsToShow)
@@ -66,6 +65,7 @@ const App = () => {
 			setUser(user)
 			setUsername('')
 			setPassword('')
+			blogsService.setToken(user.token)
 
 			window.localStorage.setItem(
 				'loggedBlogAppUser', JSON.stringify(user)
@@ -155,7 +155,7 @@ const App = () => {
 				<h1>Blogs</h1>
 				<Notification message={noticationMessage} />
 				{currUser.username} logged in <br/><br/> <button onClick={handleLogout}>logout</button>
-				<Togglable buttonLabel="New Blog">
+				<Togglable buttonLabel="New Blog" id='new-blog'>
 					<BlogForm addBlog={addBlog}/>
 				</Togglable>
 				<ul>

@@ -24,14 +24,14 @@ const Blog = ({ title, author, likes, url, handleLike, handleDelete }) => {
 	}
 
 	return(
-		<div style={blogStyle}>
+		<div style={blogStyle} className='blog'>
 			<button onClick={toggleVisibility} className='detailsButton'>{detailsButton}</button>
 			<div className='title'>
-			TITLE: {title} AUTHOR: {author} <button onClick={handleDelete}>DELETE</button>
+			TITLE: {title} AUTHOR: {author} <button onClick={handleDelete} id='deleteButton'>DELETE</button>
 			</div>
 			<div style={detailsStyle} className='details'>
 			URL: {url}
-			LIKES: {likes} <button onClick={handleLike}>LIKE</button>
+			LIKES: {likes} <button onClick={handleLike} className='likeButton'>LIKE</button>
 			</div>
 		</div>
 	)
